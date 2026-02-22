@@ -11,20 +11,20 @@ This project is a simple web application that generates random lottery numbers. 
 *   **`style.css`**: The stylesheet for the application. It provides the styling for the lottery number balls, the container, and the button, creating a visually appealing and responsive layout.
 *   **`main.js`**: The JavaScript file that contains the application logic. It defines a custom element (`lotto-numbers`) to display the lottery balls and handles the random number generation when the button is clicked.
 
-## Current Task: Create the Lotto Number Generator
+## Implemented Features
+
+*   **Lotto Number Generation**: Generates 6 unique random numbers between 1 and 45.
+*   **Modern UI**: Features a clean and visually appealing interface with styled lottery balls and a generation button.
+
+## Current Task: Add Dark/Light Mode Toggle
 
 1.  **Update `index.html`**:
-    *   Change the title to "Lotto Number Generator".
-    *   Add a `lotto-container` to hold the generated numbers.
-    *   Add a button with the ID `generate-btn` to trigger the number generation.
-    *   Use the `<lotto-numbers>` custom element to display the numbers.
+    *   Add a toggle switch or button to the HTML to allow users to switch between dark and light modes.
 2.  **Update `style.css`**:
-    *   Add styles for the overall layout, including a background with a subtle texture.
-    *   Style the `lotto-container` to center the numbers.
-    *   Create a visually distinct style for the lottery number balls, including colors and shadows.
-    *   Style the `generate-btn` to be interactive and visually appealing.
+    *   Define CSS variables for colors to easily switch between themes.
+    *   Create a `[data-theme="dark"]` selector to apply the dark mode styles.
+    *   Add styles for the toggle switch.
 3.  **Update `main.js`**:
-    *   Create a `LottoNumbers` class that extends `HTMLElement`.
-    *   Use the Shadow DOM to encapsulate the styles and structure of the lotto numbers.
-    *   Implement a function to generate and display 6 unique random numbers between 1 and 45.
-    *   Add an event listener to the `generate-btn` to call the number generation function.
+    *   Add an event listener to the toggle switch.
+    *   When the switch is toggled, update the `data-theme` attribute on the `<html>` element to switch between `light` and `dark` themes.
+    *   Implement logic to save the user's theme preference in `localStorage` and apply it on page load.

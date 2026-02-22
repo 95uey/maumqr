@@ -1,24 +1,55 @@
+:root {
+    --bg-color: #f0f2f5;
+    --container-bg: #fff;
+    --text-color: #333;
+    --button-bg: #4CAF50;
+    --button-text: #fff;
+    --button-hover-bg: #45a049;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --ball-shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --button-bg: #5a9a5d;
+    --button-hover-bg: #6cb870;
+    --shadow-color: rgba(255, 255, 255, 0.1);
+    --ball-shadow-color: rgba(0, 0, 0, 0.5);
+}
+
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f2f5;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     text-align: center;
-    background-color: #fff;
+    background-color: var(--container-bg);
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px var(--shadow-color);
+    transition: background-color 0.3s;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 h1 {
-    margin-bottom: 30px;
-    color: #333;
+    color: var(--text-color);
+    margin: 0;
 }
 
 #lotto-container {
@@ -38,14 +69,14 @@ h1 {
     font-size: 24px;
     font-weight: bold;
     color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px var(--ball-shadow-color);
 }
 
 #generate-btn {
     padding: 15px 30px;
     font-size: 18px;
-    color: #fff;
-    background-color: #4CAF50;
+    color: var(--button-text);
+    background-color: var(--button-bg);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -53,5 +84,56 @@ h1 {
 }
 
 #generate-btn:hover {
-    background-color: #45a049;
+    background-color: var(--button-hover-bg);
+}
+
+/* Theme Switch Styles */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
 }
