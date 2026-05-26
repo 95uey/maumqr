@@ -1,15 +1,37 @@
 'use client'
 
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
 export default function SocialSignup() {
-  function handleGoogle() {
-    // TODO: Supabase Google OAuth
-    // supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: '/onboarding' } })
-    alert('Google 로그인 연동 예정')
+  const [loading, setLoading] = useState<'google' | 'naver' | null>(null)
+
+  async function handleGoogle() {
+    setLoading('google')
+    const supabase = createClient()
+
+    // 가입 후 온보딩 페이지로 이동 (신규) 또는 대시보드 (기존)
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent('/onboarding')}`
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: callbackUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+
+    if (error) {
+      console.error('Google 로그인 오류:', error)
+      setLoading(null)
+    }
   }
 
-  function handleNaver() {
-    // TODO: Naver OAuth (커스텀 구현 필요)
-    alert('네이버 로그인 연동 예정')
+  async function handleNaver() {
+    alert('네이버 로그인은 곧 지원될 예정입니다. Google로 시작해 주세요.')
   }
 
   return (
@@ -19,14 +41,20 @@ export default function SocialSignup() {
       </p>
       <button
         onClick={handleGoogle}
-        className="w-full flex items-center justify-center gap-3 py-3.5 bg-white border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 hover:border-gray-300 transition-colors active:scale-95"
+        disabled={loading !== null}
+        className="w-full flex items-center justify-center gap-3 py-3.5 bg-white border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 hover:border-gray-300 transition-colors active:scale-95 disabled:opacity-60"
       >
-        <GoogleIcon />
+        {loading === 'google' ? (
+          <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        ) : (
+          <GoogleIcon />
+        )}
         Google로 시작하기
       </button>
       <button
         onClick={handleNaver}
-        className="w-full flex items-center justify-center gap-3 py-3.5 bg-[#03C75A] rounded-2xl text-sm font-medium text-white hover:bg-[#02b350] transition-colors active:scale-95"
+        disabled={loading !== null}
+        className="w-full flex items-center justify-center gap-3 py-3.5 bg-[#03C75A] rounded-2xl text-sm font-medium text-white hover:bg-[#02b350] transition-colors active:scale-95 disabled:opacity-60"
       >
         <NaverIcon />
         네이버로 시작하기

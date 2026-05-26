@@ -1,20 +1,48 @@
 'use client'
 
+import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+
 interface LoginModalProps {
   onClose: () => void
   onSuccess: () => void
+  /** 로그인 후 돌아올 URL (결제 재개용). 미지정 시 현재 페이지 */
+  redirectTo?: string
 }
 
-export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
-  function handleGoogle() {
-    // TODO: Supabase Google OAuth
-    // await supabase.auth.signInWithOAuth({ provider: 'google' })
-    onSuccess() // 임시: 바로 성공 처리
+export default function LoginModal({ onClose, onSuccess, redirectTo }: LoginModalProps) {
+  const [loading, setLoading] = useState<'google' | 'naver' | null>(null)
+
+  async function handleGoogle() {
+    setLoading('google')
+    const supabase = createClient()
+
+    // 로그인 후 돌아올 URL: 현재 결제 페이지 (next 파라미터로 전달)
+    const next = redirectTo ?? window.location.pathname + window.location.search
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: callbackUrl,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+
+    if (error) {
+      console.error('Google 로그인 오류:', error)
+      setLoading(null)
+    }
+    // 성공 시 브라우저가 Google로 리다이렉트되므로 별도 처리 불필요
   }
 
-  function handleNaver() {
-    // TODO: Naver OAuth
-    onSuccess() // 임시: 바로 성공 처리
+  async function handleNaver() {
+    // TODO: 네이버 OAuth 커스텀 구현
+    // 현재는 안내 메시지
+    alert('네이버 로그인은 곧 지원될 예정입니다. Google로 로그인해 주세요.')
   }
 
   return (
@@ -40,14 +68,20 @@ export default function LoginModal({ onClose, onSuccess }: LoginModalProps) {
         <div className="space-y-3">
           <button
             onClick={handleGoogle}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-white border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 hover:border-gray-300 transition-colors active:scale-95"
+            disabled={loading !== null}
+            className="w-full flex items-center justify-center gap-3 py-4 bg-white border-2 border-gray-200 rounded-2xl text-sm font-medium text-gray-700 hover:border-gray-300 transition-colors active:scale-95 disabled:opacity-60"
           >
-            <GoogleIcon />
+            {loading === 'google' ? (
+              <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+            ) : (
+              <GoogleIcon />
+            )}
             Google로 계속하기
           </button>
           <button
             onClick={handleNaver}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-[#03C75A] rounded-2xl text-sm font-medium text-white active:scale-95"
+            disabled={loading !== null}
+            className="w-full flex items-center justify-center gap-3 py-4 bg-[#03C75A] rounded-2xl text-sm font-medium text-white active:scale-95 disabled:opacity-60"
           >
             <NaverIcon />
             네이버로 계속하기
